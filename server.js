@@ -3,7 +3,7 @@ const http = require('http');
 const {Server} = require('socket.io');
 const cors = require('cors');
 
-const grahak = require('./grahak');
+// const grahak = require('./grahak');
 
 const app = express();
 app.use(cors());
@@ -31,6 +31,10 @@ io.on("connection", (socket) => {
         updateUsersInRoom(room);
         console.log(`user ${socket.id} has joined ${room}`);
     });
+
+    socket.on("mouseMove", (data) => {
+        socket.to(Array.from(socket.rooms)[1]).emit("mouseMoved", data);
+    })
 
     socket.on("disconnecting", () => {
         console.log(`user ${socket.id} disconnected`);
