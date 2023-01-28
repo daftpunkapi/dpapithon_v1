@@ -2,12 +2,21 @@ import './App.css';
 import io from 'socket.io-client';
 import { useEffect, useState } from 'react';
 
+const cursorUrlArray = [
+  'https://icons.iconarchive.com/icons/svengraph/daft-punk/256/Daft-Punk-Guyman-Off-icon.png', 
+  'https://icons.iconarchive.com/icons/everaldo/starwars/128/Darth-Vader-icon.png', 
+  'https://icons.iconarchive.com/icons/everaldo/starwars/128/clone-old-icon.png',
+  'https://icons.iconarchive.com/icons/svengraph/daft-punk/256/Daft-Punk-Thomas-On-icon.png'
+];
+
 const socket = io.connect("http://localhost:3001");
 
 function App() {
   const [userCount, setUserCount] = useState("");
   const[otherCursor, setOtherUser] = useState({x:0, y:0});
 
+  const [cursorUrl, setCursorUrl] = useState(cursorUrlArray[0]);
+  
   useEffect(() => {
     socket.on("newUserCount", (count) => {
       setUserCount(count);
@@ -25,6 +34,8 @@ function App() {
       setOtherUser({x: data.x, y: data.y});
     });
     
+    setCursorUrl(cursorUrlArray[Math.floor(Math.random() * cursorUrlArray.length)]);
+
     // Listen to removeCursor event and remove cursor element from DOM
     // socket.on("removeCursor", (socketId) => {
     //   const cursor = document.getElementById(`cursor-${socketId}`);
@@ -60,7 +71,8 @@ function App() {
         className='other-cursor'
         style={{
           left: otherCursor.x,
-          top: otherCursor.y
+          top: otherCursor.y,
+          backgroundImage: `url(${cursorUrl})`
         }} />
     </div>
   );
