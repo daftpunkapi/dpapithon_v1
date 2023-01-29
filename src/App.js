@@ -2,20 +2,20 @@ import './App.css';
 import io from 'socket.io-client';
 import { useEffect, useState } from 'react';
 
-const cursorUrlArray = [
-  'https://icons.iconarchive.com/icons/svengraph/daft-punk/256/Daft-Punk-Guyman-Off-icon.png', 
-  'https://icons.iconarchive.com/icons/everaldo/starwars/128/Darth-Vader-icon.png', 
-  'https://icons.iconarchive.com/icons/everaldo/starwars/128/clone-old-icon.png',
-  'https://icons.iconarchive.com/icons/svengraph/daft-punk/256/Daft-Punk-Thomas-On-icon.png'
-];
+// const cursorUrlArray = [
+//   'https://icons.iconarchive.com/icons/svengraph/daft-punk/256/Daft-Punk-Guyman-Off-icon.png', 
+//   'https://icons.iconarchive.com/icons/everaldo/starwars/128/Darth-Vader-icon.png', 
+//   'https://icons.iconarchive.com/icons/everaldo/starwars/128/clone-old-icon.png',
+//   'https://icons.iconarchive.com/icons/svengraph/daft-punk/256/Daft-Punk-Thomas-On-icon.png'
+// ];
 
-const socket = io.connect("http://localhost:3001");
+const socket = io.connect("http://192.168.106.88:3001");
 
 function App() {
   const [userCount, setUserCount] = useState("");
-  const[otherCursor, setOtherUser] = useState({x:0, y:0});
+  const[otherCursors, setOtherUsers] = useState([]);
 
-  const [cursorUrl, setCursorUrl] = useState("");
+  // const [cursorUrl, setCursorUrl] = useState("");
   
   useEffect(() => {
     socket.on("newUserCount", (count) => {
@@ -26,28 +26,21 @@ function App() {
       socket.emit("mouseMove", {x: event.clientX, y: event.clientY});
     }
 
-    // Add event listener for mouse movement {part of DOM elemen}
+    // Add event listener for mouse movement {part of DOM element}
     document.addEventListener("mousemove", handleMouseMove);
 
     // Handle broadcasted mouseMoved event from server
-    socket.on("mouseMoved", (data) => {
-      setOtherUser({x: data.x, y: data.y});
+    socket.on("cursorUpdate", (data) => {
+      setOtherUsers(data);
     });
     
-    setCursorUrl(cursorUrlArray[Math.floor(Math.random() * cursorUrlArray.length)]);
+    // setCursorUrl(cursorUrlArray[Math.floor(Math.random() * cursorUrlArray.length)]);
 
-    // Listen to removeCursor event and remove cursor element from DOM
-    // socket.on("removeCursor", (socketId) => {
-    //   const cursor = document.getElementById(`cursor-${socketId}`);
-    //   if (cursor) {
-    //       cursor.remove();
-    //   }
-    // });
 
     // Remove event listener when component unmounts
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-    };
+    // return () => {
+    //   document.removeEventListener("mousemove", handleMouseMove);
+    // };
 
   },[]);
 
@@ -66,14 +59,21 @@ function App() {
       }}>Join Room 2</button>
     </p>
     There are {userCount} users in the room.
-    
-      <div
-        className='other-cursor'
-        style={{
-          left: otherCursor.x,
-          top: otherCursor.y,
-          backgroundImage: `url(${cursorUrl})`
-        }} />
+    {otherCursors.map((cursor) => {
+      if(cursor.socketId !== socket.id){
+      return(
+        <div 
+          key={cursor.socketId} 
+          className="other-cursor" 
+          style={{
+            left: cursor.x,
+            top: cursor.y,
+            // transition: "transform 120ms linear",
+            // transform: `translateX(${cursor.x}px) translateY(${cursor.y}px)`,
+          }}
+        />);
+      } else {return null;}
+    })}
     </div>
   );
 }
