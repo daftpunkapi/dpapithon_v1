@@ -2,20 +2,20 @@ import './App.css';
 import io from 'socket.io-client';
 import { useEffect, useState } from 'react';
 
-// const cursorUrlArray = [
-//   'https://icons.iconarchive.com/icons/svengraph/daft-punk/256/Daft-Punk-Guyman-Off-icon.png', 
-//   'https://icons.iconarchive.com/icons/everaldo/starwars/128/Darth-Vader-icon.png', 
-//   'https://icons.iconarchive.com/icons/everaldo/starwars/128/clone-old-icon.png',
-//   'https://icons.iconarchive.com/icons/svengraph/daft-punk/256/Daft-Punk-Thomas-On-icon.png'
-// ];
+const cursorUrlArray = [
+  'https://icons.iconarchive.com/icons/svengraph/daft-punk/256/Daft-Punk-Guyman-Off-icon.png', 
+  'https://icons.iconarchive.com/icons/everaldo/starwars/128/Darth-Vader-icon.png', 
+  'https://icons.iconarchive.com/icons/everaldo/starwars/128/clone-old-icon.png',
+  'https://icons.iconarchive.com/icons/svengraph/daft-punk/256/Daft-Punk-Thomas-On-icon.png'
+];
 
-const socket = io.connect("http://192.168.106.88:3001");
+const socket = io.connect("http://localhost:3001");
 
 function App() {
   const [userCount, setUserCount] = useState("");
   const[otherCursors, setOtherUsers] = useState([]);
 
-  // const [cursorUrl, setCursorUrl] = useState("");
+  const [cursorUrl, setCursorUrl] = useState("");
   
   useEffect(() => {
     socket.on("newUserCount", (count) => {
@@ -34,7 +34,7 @@ function App() {
       setOtherUsers(data);
     });
     
-    // setCursorUrl(cursorUrlArray[Math.floor(Math.random() * cursorUrlArray.length)]);
+    setCursorUrl(cursorUrlArray[Math.floor(Math.random() * cursorUrlArray.length)]);
 
 
     // Remove event listener when component unmounts
@@ -46,7 +46,7 @@ function App() {
 
   return (
     <div className="App">
-    <h1><b>DPAPI zindabad!</b></h1>
+    <h1><b>DPAPI!</b></h1>
     <p>
     <button onClick={() => {
         socket.emit("join_room", "room1");
@@ -68,6 +68,7 @@ function App() {
           style={{
             left: cursor.x,
             top: cursor.y,
+            backgroundImage: `url(${cursorUrl})`
             // transition: "transform 120ms linear",
             // transform: `translateX(${cursor.x}px) translateY(${cursor.y}px)`,
           }}

@@ -39,9 +39,8 @@
 
 .other-cursor{
   position : absolute;
-  width: 15px;
-  height: 15px;
+  width: 45px;
+  height: 45px;
   background-size: contain;
-  background-color: red;
   border-radius: 100%;
 }
