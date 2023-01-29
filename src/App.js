@@ -15,7 +15,7 @@ function App() {
   const [userCount, setUserCount] = useState("");
   const[otherCursor, setOtherUser] = useState({x:0, y:0});
 
-  const [cursorUrl, setCursorUrl] = useState(cursorUrlArray[0]);
+  const [cursorUrl, setCursorUrl] = useState("");
   
   useEffect(() => {
     socket.on("newUserCount", (count) => {
